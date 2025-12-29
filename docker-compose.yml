@@ -24,10 +24,9 @@ services:
     environment:
       CB_SERVER_BIND_ADDRESS: "0.0.0.0"
       CB_SERVER_PORT: 8978
-      CB_SERVER_CONFIG_PATH: /opt/cloudbeaver/config
       CB_SERVER_ALLOWED_DOMAINS: ${CB_SERVER_ALLOWED_DOMAINS}
     volumes:
-      - cloudbeaver_data:/opt/cloudbeaver/config
+      - cloudbeaver_data:/opt/cloudbeaver/conf
     depends_on:
       - mysql
     networks:
