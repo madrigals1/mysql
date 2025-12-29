@@ -1,0 +1,48 @@
+services:
+  mysql:
+    image: mysql:9.5.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - database_network
+  
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:25.3.1
+    container_name: cloudbeaver
+    restart: unless-stopped
+    ports:
+      - "${BEAVER_PORT}:8978"
+    environment:
+      CB_SERVER_BIND_ADDRESS: "0.0.0.0"
+      CB_SERVER_PORT: 8978
+      CB_SERVER_CONFIG_PATH: /opt/cloudbeaver/config
+      CB_SERVER_ALLOWED_DOMAINS: ${CB_SERVER_ALLOWED_DOMAINS}
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/config
+    depends_on:
+      - mysql
+    networks:
+      - database_network
+      - https_network
+
+
+networks:
+  https_network:
+    external: true
+    name: ${HTTPS_NETWORK}
+  database_network:
+    external: true
+    name: ${DATABASE_NETWORK}
+
+volumes:
+  mysql_data:
+  cloudbeaver_data:
